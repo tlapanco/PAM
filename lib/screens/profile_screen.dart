@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:pam/screens/song_list_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -8,31 +9,40 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: ProfileAppBar(),
       body: Center(child: ProfileCard()),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Color(0xFF00D9FF),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black26,
-              blurRadius: 5,
-              offset: Offset(0, -2),
-            ),
-          ],
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(30),
-            topRight: Radius.circular(30),
+      bottomNavigationBar: ProfileBottomBar(),
+    );
+  }
+}
+
+class ProfileBottomBar extends StatelessWidget {
+  const ProfileBottomBar({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Color(0xFF00D9FF),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black26,
+            blurRadius: 5,
+            offset: Offset(0, -2),
           ),
+        ],
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(30),
+          topRight: Radius.circular(30),
         ),
-        child: Padding(
-          padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.account_box)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.home)),
-              IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app)),
-            ],
-          ),
+      ),
+      child: Padding(
+        padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            IconButton(onPressed: () {}, icon: Icon(Icons.account_box)),
+            IconButton(onPressed: () {}, icon: Icon(Icons.home)),
+            IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app)),
+          ],
         ),
       ),
     );
@@ -89,7 +99,15 @@ class ProfileCard extends StatelessWidget {
             style: textCardStyle,
           ),
           SizedBox(height: 10),
-          ElevatedButton(onPressed: () {}, child: Text('Ver canciones')),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SongListScreen()),
+              );
+            },
+            child: Text('Ver canciones'),
+          ),
         ],
       ),
     );
