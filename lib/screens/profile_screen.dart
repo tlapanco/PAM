@@ -8,6 +8,33 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: ProfileAppBar(),
       body: Center(child: ProfileCard()),
+      bottomNavigationBar: Container(
+        decoration: BoxDecoration(
+          color: Color(0xFF00D9FF),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black26,
+              blurRadius: 5,
+              offset: Offset(0, -2),
+            ),
+          ],
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(30),
+            topRight: Radius.circular(30),
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsetsGeometry.symmetric(horizontal: 20, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.account_box)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.home)),
+              IconButton(onPressed: () {}, icon: Icon(Icons.exit_to_app)),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
@@ -15,7 +42,7 @@ class ProfileScreen extends StatelessWidget {
 class ProfileCard extends StatelessWidget {
   ProfileCard({super.key});
 
-  final String profileName = 'Profesor';
+  final String profileName = 'Fabian AT...';
 
   final String cardProfilePhoto =
       'https://cdn4.iconfinder.com/data/icons/avatars-xmas-giveaway/128/batman_hero_avatar_comics-512.png';
