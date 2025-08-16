@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:pam/screens/song_list_screen.dart';
+import 'package:pam/screens/weather_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -140,7 +141,17 @@ class ProfileAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      actions: [Icon(Icons.music_note, size: 30)],
+      actions: [
+        IconButton(
+          icon: Icon(Icons.cloud),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => WeatherScreen()),
+            );
+          },
+        ),
+      ],
       actionsPadding: EdgeInsetsDirectional.only(end: 20),
     );
   }
