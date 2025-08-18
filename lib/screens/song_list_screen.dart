@@ -39,51 +39,69 @@ class _SongListScreenState extends State<SongListScreen> {
                 itemBuilder: (context, index) {
                   final song = songs[index];
 
-                  return ListTile(
-                    title: Text(song.title),
-                    subtitle: Text(song.artist),
-                    onTap: () {
-                      _isPlaying == true && _currentSong == song
-                          ? _stopSong()
-                          : _playSong(song);
-                    },
+                  return Card(
+                    margin: EdgeInsetsGeometry.all(8),
+                    elevation: 4,
+                    child: ListTile(
+                      title: Text(
+                        song.title,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(song.artist),
+                      trailing: IconButton(
+                        onPressed: () {
+                          if (_isPlaying && _currentSong == song) {
+                            _stopSong();
+                          } else {
+                            _playSong(song);
+                          }
+                        },
+                        icon: Icon(
+                          (_isPlaying && _currentSong == song)
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                          color:
+                              (_isPlaying && _currentSong == song)
+                                  ? Colors.red
+                                  : Colors.grey,
+                        ),
+                      ),
+                    ),
                   );
                 },
               ),
             ),
             if (_currentSong != null)
-              Padding(
-                padding: EdgeInsetsGeometry.symmetric(
-                  vertical: 8,
-                  horizontal: 16,
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 5,
+                      offset: Offset(0, -2),
+                    ),
+                  ],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
                 ),
-                child: Text(
-                  '${_formattedSongDuration(_audioPlayer.bufferedPosition)} - ${_formattedSongDuration(_audioPlayer.duration!)}',
+                child: Column(
+                  children: [
+                    Slider(
+                      value: _audioPlayer.position.inSeconds.toDouble(),
+                      max: _audioPlayer.duration!.inSeconds.toDouble(),
+                      min: 0,
+                      activeColor: Colors.cyan,
+                      onChanged: (value) {
+                        _audioPlayer.seek(Duration(seconds: value.toInt()));
+                      },
+                    ),
+                  ],
                 ),
               ),
-            Padding(
-              padding: EdgeInsetsGeometry.all(10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed:
-                        _isPlaying
-                            ? null
-                            : () {
-                              if (_currentSong != null)
-                                _playSong(_currentSong!);
-                            },
-                    child: Icon(Icons.play_arrow),
-                  ),
-                  const SizedBox(width: 10),
-                  ElevatedButton(
-                    onPressed: _isPlaying ? _stopSong : null,
-                    child: Icon(Icons.stop),
-                  ),
-                ],
-              ),
-            ),
           ],
         ),
       ),
@@ -101,6 +119,13 @@ class _SongListScreenState extends State<SongListScreen> {
     } catch (e) {
       print("error al reproducir la canción");
     }
+  }
+
+  void _pauseSong() {
+    _audioPlayer.pause();
+    setState(() {
+      _isPlaying = false;
+    });
   }
 
   void _stopSong() {
