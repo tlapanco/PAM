@@ -91,18 +91,40 @@ class _SongListScreenState extends State<SongListScreen> {
                   ),
                   child: Column(
                     children: [
-                      Slider(
-                        value: _audioPlayer.position.inSeconds.toDouble(),
-                        max: _audioPlayer.duration!.inSeconds.toDouble(),
-                        min: 0,
-                        divisions: _audioPlayer.duration!.inSeconds,
+                      StreamBuilder(
+                        stream: _audioPlayer.positionStream,
+                        builder: (context, snapshot) {
+                          final position = snapshot.data ?? Duration.zero;
+                          final duration =
+                              _audioPlayer.duration ?? Duration.zero;
+                          return Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Text(_formattedSongDuration(duration)),
+                                  SizedBox(width: 10),
+                                  Text(_formattedSongDuration(position)),
+                                ],
+                              ),
+                              Slider(
+                                value: position.inSeconds.toDouble(),
+                                max: duration.inSeconds.toDouble(),
+                                min: 0,
 
-                        activeColor: Colors.cyan,
-                        onChanged: (value) {
-                          _audioPlayer.seek(Duration(seconds: value.toInt()));
-                          setState(() {});
+                                activeColor: Colors.cyan,
+                                onChanged: (value) {
+                                  _audioPlayer.seek(
+                                    Duration(seconds: value.toInt()),
+                                  );
+                                  setState(() {});
+                                },
+                              ),
+                            ],
+                          );
                         },
                       ),
+
                       SizedBox(height: 10),
                       Row(
                         children: [
@@ -127,10 +149,6 @@ class _SongListScreenState extends State<SongListScreen> {
                               size: 50,
                             ),
                           ),
-                          SizedBox(width: 10),
-                          Text(_formattedSongDuration(_audioPlayer.duration!)),
-                          SizedBox(width: 10),
-                          Text(_formattedSongDuration(_audioPlayer.position)),
                         ],
                       ),
                     ],
@@ -145,11 +163,18 @@ class _SongListScreenState extends State<SongListScreen> {
 
   void _playSong(Song song) async {
     try {
-      await _audioPlayer.setAsset(song.path);
-      _audioPlayer.play();
+      if (_currentSong == song) {
+        _audioPlayer.play();
+      } else {
+        await _audioPlayer.setAsset(song.path);
+        _audioPlayer.play();
+        setState(() {
+          _currentSong = song;
+        });
+      }
+
       setState(() {
         _isPlaying = true;
-        _currentSong = song;
       });
     } catch (e) {
       print("error al reproducir la canción");
@@ -163,8 +188,9 @@ class _SongListScreenState extends State<SongListScreen> {
     });
   }
 
-  void _stopSong() {
-    _audioPlayer.stop();
+  void _stopSong() async {
+    await _audioPlayer.stop();
+    await _audioPlayer.seek(Duration.zero);
     setState(() {
       _isPlaying = false;
     });
