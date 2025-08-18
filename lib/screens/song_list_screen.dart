@@ -95,9 +95,12 @@ class _SongListScreenState extends State<SongListScreen> {
                         value: _audioPlayer.position.inSeconds.toDouble(),
                         max: _audioPlayer.duration!.inSeconds.toDouble(),
                         min: 0,
+                        divisions: _audioPlayer.duration!.inSeconds,
+
                         activeColor: Colors.cyan,
                         onChanged: (value) {
                           _audioPlayer.seek(Duration(seconds: value.toInt()));
+                          setState(() {});
                         },
                       ),
                       SizedBox(height: 10),
