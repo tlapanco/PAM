@@ -117,7 +117,7 @@ class _SongListScreenState extends State<SongListScreen> {
                                   _audioPlayer.seek(
                                     Duration(seconds: value.toInt()),
                                   );
-                                  setState(() {});
+                                  //setState(() {});
                                 },
                               ),
                             ],
@@ -193,6 +193,7 @@ class _SongListScreenState extends State<SongListScreen> {
     await _audioPlayer.seek(Duration.zero);
     setState(() {
       _isPlaying = false;
+      _currentSong = null;
     });
   }
 
