@@ -72,34 +72,66 @@ class _SongListScreenState extends State<SongListScreen> {
               ),
             ),
             if (_currentSong != null)
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black26,
-                      blurRadius: 5,
-                      offset: Offset(0, -2),
+              SafeArea(
+                child: Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 5,
+                        offset: Offset(0, -2),
+                      ),
+                    ],
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(30),
+                      topRight: Radius.circular(30),
                     ),
-                  ],
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(30),
-                    topRight: Radius.circular(30),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    Slider(
-                      value: _audioPlayer.position.inSeconds.toDouble(),
-                      max: _audioPlayer.duration!.inSeconds.toDouble(),
-                      min: 0,
-                      activeColor: Colors.cyan,
-                      onChanged: (value) {
-                        _audioPlayer.seek(Duration(seconds: value.toInt()));
-                      },
-                    ),
-                  ],
+                  child: Column(
+                    children: [
+                      Slider(
+                        value: _audioPlayer.position.inSeconds.toDouble(),
+                        max: _audioPlayer.duration!.inSeconds.toDouble(),
+                        min: 0,
+                        activeColor: Colors.cyan,
+                        onChanged: (value) {
+                          _audioPlayer.seek(Duration(seconds: value.toInt()));
+                        },
+                      ),
+                      SizedBox(height: 10),
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: _stopSong,
+                            icon: Icon(
+                              Icons.stop,
+                              color: Colors.cyan,
+                              size: 50,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          IconButton(
+                            onPressed: () {
+                              (_isPlaying)
+                                  ? _pauseSong()
+                                  : _playSong(_currentSong!);
+                            },
+                            icon: Icon(
+                              (_isPlaying) ? Icons.pause : Icons.play_arrow,
+                              color: Colors.cyan,
+                              size: 50,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Text(_formattedSongDuration(_audioPlayer.duration!)),
+                          SizedBox(width: 10),
+                          Text(_formattedSongDuration(_audioPlayer.position)),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
           ],
