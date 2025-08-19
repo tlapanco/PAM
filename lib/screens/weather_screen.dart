@@ -106,6 +106,7 @@ class WeatherCard extends StatelessWidget {
               SizedBox(height: 10),
               Text(
                 weather.condition, // Condición del clima
+                textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.w200),
               ),
             ],

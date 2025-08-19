@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:pam/screens/favorite_list_screen.dart';
 
 class SongListScreen extends StatefulWidget {
   const SongListScreen({super.key});
@@ -22,6 +23,8 @@ class _SongListScreenState extends State<SongListScreen> {
     ),
   ];
 
+  List<Song> favoriteSongs = [];
+
   final AudioPlayer _audioPlayer = AudioPlayer();
   bool _isPlaying = false;
   Song? _currentSong;
@@ -29,7 +32,25 @@ class _SongListScreenState extends State<SongListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Canciones'), centerTitle: true),
+      appBar: AppBar(
+        title: Text('Canciones'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (context) =>
+                          FavoriteListScreen(favoriteSongs: favoriteSongs),
+                ),
+              );
+            },
+            icon: Icon(Icons.favorite, color: Colors.cyan),
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           children: [
@@ -48,23 +69,37 @@ class _SongListScreenState extends State<SongListScreen> {
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                       subtitle: Text(song.artist),
-                      trailing: IconButton(
-                        onPressed: () {
-                          if (_isPlaying && _currentSong == song) {
-                            _stopSong();
-                          } else {
-                            _playSong(song);
-                          }
-                        },
-                        icon: Icon(
-                          (_isPlaying && _currentSong == song)
-                              ? Icons.pause
-                              : Icons.play_arrow,
-                          color:
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            onPressed: () => _handleFavorite(song),
+                            icon: Icon(
+                              (song.isFavorite)
+                                  ? Icons.favorite
+                                  : Icons.favorite_border,
+                              color: Colors.cyan,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              if (_isPlaying && _currentSong == song) {
+                                _stopSong();
+                              } else {
+                                _playSong(song);
+                              }
+                            },
+                            icon: Icon(
                               (_isPlaying && _currentSong == song)
-                                  ? Colors.red
-                                  : Colors.grey,
-                        ),
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                              color:
+                                  (_isPlaying && _currentSong == song)
+                                      ? Colors.red
+                                      : Colors.grey,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   );
@@ -161,6 +196,17 @@ class _SongListScreenState extends State<SongListScreen> {
     );
   }
 
+  void _handleFavorite(Song song) {
+    setState(() {
+      song.isFavorite = !song.isFavorite;
+      if (song.isFavorite) {
+        favoriteSongs.add(song);
+      } else {
+        favoriteSongs.remove(song);
+      }
+    });
+  }
+
   void _playSong(Song song) async {
     try {
       if (_currentSong == song) {
@@ -214,5 +260,6 @@ class Song {
   String title;
   String artist;
   String path;
+  bool isFavorite = false;
   Song({required this.title, required this.artist, required this.path});
 }
